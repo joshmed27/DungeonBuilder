@@ -12,8 +12,12 @@ public class LevelManager2 : MonoBehaviour{
     // Start is called before the first frame update
     void Start()
     {
-        int[,] mapArray = GenerateArray(100, 100, false);
-        RenderMap(mapArray, mainmap, tile);
+        int[,] mapArrayTop = GenerateArray(10, 6, true);
+        //int[,] mapArrayBottom = GenerateArray(10, 6, true);
+        int[,] newMapArrTop = RandomWalkTop(mapArrayTop, 3343f);
+        //int[,] newMapArrBot = RandomWalkBottom(mapArrayBottom, 3343f);
+        RenderMap(newMapArrTop, mainmap, tile);
+        //RenderMap(newMapArrBot, mainmap, tile);
     }
 
     // Update is called once per frame
@@ -21,9 +25,8 @@ public class LevelManager2 : MonoBehaviour{
     {
         
     }
-
     
-
+    //Generates an array to begin filling with room tiles
     public static int[,] GenerateArray(int width, int height, bool empty){
         int[,] map = new int[width, height];
         for (int x = 0; x < map.GetUpperBound(0); x++){
@@ -54,16 +57,72 @@ public class LevelManager2 : MonoBehaviour{
         }
     }
 
-    public static void UpdateMap(int[,] map, Tilemap tilemap) {//Takes in our map and tilemap, setting null tiles where needed
+    //Update feature for less resource heavy renders, takes in our map and tilemap, setting null tiles where needed
+    public static void UpdateMap(int[,] map, Tilemap tilemap) {
         for (int x = 0; x < map.GetUpperBound(0); x++){
             for (int y = 0; y < map.GetUpperBound(1); y++){
-                //We are only going to update the map, rather than rendering again
-                //This is because it uses less resources to update tiles to null
-                //As opposed to re-drawing every single tile (and collision data)
                 if (map[x, y] == 0){
                     tilemap.SetTile(new Vector3Int(x, y, 0), null);
                 }
             }
         }
+    }
+
+    public static int[,] RandomWalkTop(int[,] map, float seed){
+        //Generate random seed
+        System.Random rand = new System.Random(seed.GetHashCode()); 
+        //Find a random starting height (Might add bottom pref)
+        int lastHeight = Random.Range(0, map.GetUpperBound(1));
+        
+        //Cycling through widths to generate random heights
+        for (int x = 0; x < map.GetUpperBound(0); x++) {
+            //Flip a coin (0 heads, 1 tails)
+            int nextMove = rand.Next(2);
+
+            //If heads, and we aren't near the bottom, minus some height
+            if (nextMove == 0 && lastHeight > 2) {
+                lastHeight--;
+            }
+            //If tails, and we aren't near the top, add some height
+            else if (nextMove == 1 && lastHeight < map.GetUpperBound(1) - 2) {
+                lastHeight++;
+            }
+
+            //Circle through from the lastheight to the bottom
+            for (int y = lastHeight; y >= 0; y--) {
+                map[x, y] = 1;
+            }
+        }
+        //Return the map
+        return map; 
+    }
+
+    public static int[,] RandomWalkBottom(int[,] map, float seed){
+        //Generate random seed
+        System.Random rand = new System.Random(seed.GetHashCode()); 
+        //Find a random starting height (Might add bottom pref)
+        int lastHeight = Random.Range(0, map.GetUpperBound(1));
+        
+        //Cycling through widths to generate random heights
+        for (int x = 0; x < map.GetUpperBound(0); x++) {
+            //Flip a coin (0 heads, 1 tails)
+            int nextMove = rand.Next(2);
+
+            //If heads, and we aren't near the bottom, minus some height
+            if (nextMove == 0 && lastHeight > 2) {
+                lastHeight--;
+            }
+            //If tails, and we aren't near the top, add some height
+            else if (nextMove == 1 && lastHeight < map.GetUpperBound(1) - 2) {
+                lastHeight++;
+            }
+
+            //Circle through from the lastheight to the top
+            for (int y = lastHeight; y <= map.GetUpperBound(1); y++) {
+                map[x, y] = 1;
+            }
+        }
+        //Return the map
+        return map; 
     }
 }

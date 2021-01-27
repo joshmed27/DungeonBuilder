@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToMoveCamera : MonoBehaviour
-{
-  public Transform player;
-  public Vector3 cameraOffset;
-  public int cameraSpeed = 10;
+public class ToMoveCamera : MonoBehaviour{
+  public float cameraSpeed = 0.01f;
 
   void Start()
   {
