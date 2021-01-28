@@ -12,12 +12,11 @@ public class LevelManager2 : MonoBehaviour{
     // Start is called before the first frame update
     void Start()
     {
-        int[,] mapArrayTop = GenerateArray(10, 6, true);
-        //int[,] mapArrayBottom = GenerateArray(10, 6, true);
-        int[,] newMapArrTop = RandomWalkTop(mapArrayTop, 3343f);
-        //int[,] newMapArrBot = RandomWalkBottom(mapArrayBottom, 3343f);
-        RenderMap(newMapArrTop, mainmap, tile);
-        //RenderMap(newMapArrBot, mainmap, tile);
+        int[,] mapArray = GenerateArray(20, 10, true);
+        mapArray = RandomWalkTop(mapArray, 9593f);
+        mapArray = ClearBottom(mapArray);
+        mapArray = RandomWalkBottom(mapArray, 3429783f);
+        RenderMap(mapArray, mainmap, tile);
     }
 
     // Update is called once per frame
@@ -68,6 +67,17 @@ public class LevelManager2 : MonoBehaviour{
         }
     }
 
+    public static int[,] ClearBottom(int[,] map) {
+        for (int x = 0; x < map.GetUpperBound(0); x++){
+            for (int y = 0; y < 4; y++){
+                if (map[x, y] == 1){
+                    map[x,y] = 0;
+                }
+            }
+        }
+        return map;
+    }
+
     public static int[,] RandomWalkTop(int[,] map, float seed){
         //Generate random seed
         System.Random rand = new System.Random(seed.GetHashCode()); 
@@ -101,7 +111,7 @@ public class LevelManager2 : MonoBehaviour{
         //Generate random seed
         System.Random rand = new System.Random(seed.GetHashCode()); 
         //Find a random starting height (Might add bottom pref)
-        int lastHeight = Random.Range(0, map.GetUpperBound(1));
+        int lastHeight = Random.Range(0, 6);
         
         //Cycling through widths to generate random heights
         for (int x = 0; x < map.GetUpperBound(0); x++) {
@@ -113,12 +123,12 @@ public class LevelManager2 : MonoBehaviour{
                 lastHeight--;
             }
             //If tails, and we aren't near the top, add some height
-            else if (nextMove == 1 && lastHeight < map.GetUpperBound(1) - 2) {
+            else if (nextMove == 1 && lastHeight < 6 - 2) {
                 lastHeight++;
             }
 
             //Circle through from the lastheight to the top
-            for (int y = lastHeight; y <= map.GetUpperBound(1); y++) {
+            for (int y = lastHeight; y <= 6; y++) {
                 map[x, y] = 1;
             }
         }
