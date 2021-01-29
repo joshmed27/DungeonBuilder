@@ -6,16 +6,29 @@ using UnityEditor.Tilemaps;
 
 public class LevelManager2 : MonoBehaviour{
 
+    //Tile and map asset for easy access
     public TileBase tile;
+    public Tile playerSpawn;
+    public Tile bossRoom;
     public Tilemap mainmap;
+    private static int width = 20;
+    private static int height = 10;
+    private static int halfway = height/2;
 
-    // Start is called before the first frame update
     void Start()
     {
-        int[,] mapArray = GenerateArray(20, 10, true);
-        mapArray = RandomWalkTop(mapArray, 9593f);
+        //generate array of the map (width, height, empty?)
+        int[,] mapArray = GenerateArray(width, height, true);
+
+        //Create noise for top layer
+        mapArray = RandomWalkTop(mapArray, Random.Range(-1000.0f, 1000.0f));
+        //clear the bottom for bottom layer noise
         mapArray = ClearBottom(mapArray);
-        mapArray = RandomWalkBottom(mapArray, 3429783f);
+        //Create bottom layer noise
+        mapArray = RandomWalkBottom(mapArray, Random.Range(-1000.0f, 1000.0f));
+        //render
+        //mapArray = DeleteRandomTiles(mapArray, Random.Range(-1000.0f, 1000.0f), Random.Range(-1000.0f, 1000.0f));
+        //GenerateEntrance (mapArray);
         RenderMap(mapArray, mainmap, tile);
     }
 
@@ -69,7 +82,7 @@ public class LevelManager2 : MonoBehaviour{
 
     public static int[,] ClearBottom(int[,] map) {
         for (int x = 0; x < map.GetUpperBound(0); x++){
-            for (int y = 0; y < 4; y++){
+            for (int y = 0; y <= halfway; y++){
                 if (map[x, y] == 1){
                     map[x,y] = 0;
                 }
@@ -81,8 +94,9 @@ public class LevelManager2 : MonoBehaviour{
     public static int[,] RandomWalkTop(int[,] map, float seed){
         //Generate random seed
         System.Random rand = new System.Random(seed.GetHashCode()); 
-        //Find a random starting height (Might add bottom pref)
-        int lastHeight = Random.Range(0, map.GetUpperBound(1));
+
+        //Find a random starting height
+        int lastHeight = Random.Range(halfway, map.GetUpperBound(1));
         
         //Cycling through widths to generate random heights
         for (int x = 0; x < map.GetUpperBound(0); x++) {
@@ -91,7 +105,7 @@ public class LevelManager2 : MonoBehaviour{
 
             //If heads, and we aren't near the bottom, minus some height
             if (nextMove == 0 && lastHeight > 2) {
-                lastHeight--;
+              lastHeight--;
             }
             //If tails, and we aren't near the top, add some height
             else if (nextMove == 1 && lastHeight < map.GetUpperBound(1) - 2) {
@@ -111,7 +125,7 @@ public class LevelManager2 : MonoBehaviour{
         //Generate random seed
         System.Random rand = new System.Random(seed.GetHashCode()); 
         //Find a random starting height (Might add bottom pref)
-        int lastHeight = Random.Range(0, 6);
+        int lastHeight = Random.Range(0, halfway);
         
         //Cycling through widths to generate random heights
         for (int x = 0; x < map.GetUpperBound(0); x++) {
@@ -123,16 +137,55 @@ public class LevelManager2 : MonoBehaviour{
                 lastHeight--;
             }
             //If tails, and we aren't near the top, add some height
-            else if (nextMove == 1 && lastHeight < 6 - 2) {
+            else if (nextMove == 1 && lastHeight < halfway - 2) {
                 lastHeight++;
             }
 
             //Circle through from the lastheight to the top
-            for (int y = lastHeight; y <= 6; y++) {
+            for (int y = lastHeight; y <= halfway; y++) {
                 map[x, y] = 1;
             }
         }
         //Return the map
         return map; 
     }
-}
+
+    //Let's make it fun :0
+    public static int[,] DeleteRandomTiles (int[,] map, float seed, float seed2) {
+        //Generate random seed
+        System.Random rand = new System.Random(seed.GetHashCode());
+        System.Random rand2 = new System.Random(seed2.GetHashCode());
+
+        //Cycling through widths to generate random nulls
+        for (int x=0; x < map.GetUpperBound(0); x++) {
+            for(int y=0; y < map.GetUpperBound(1); y++) {
+                //Flip a coin (0 heads, 1 tails)
+                int nextMove = rand.Next(2);
+                int nextMove2 = rand2.Next(2);
+
+                //If heads, and we aren't near the bottom, minus some height
+                if (nextMove == 0 && nextMove2 == 0) {
+                   map[x, y] = 0;
+                }
+                //If tails, and we aren't near the top, add some height
+                else if (nextMove == 1 && nextMove2 == 1) {
+                    map[x, y] = 0;
+                }
+            }
+        }
+        //Return the map
+        return map; 
+    }
+    
+    public static void GenerateEntrance (int[,] mapArray) {
+        for (int x=0; x < mapArray.GetUpperBound(0); x++) {
+            for(int y=0; y < mapArray.GetUpperBound(1); y++) {
+                if (mapArray[x,y] == 1) {
+                    Vector3Int pos = new Vector3Int(x,y,0);
+                    mainmap.SetTile(pos, playerSpawn);
+                    break;
+                }
+            }
+        }
+    }
+ }

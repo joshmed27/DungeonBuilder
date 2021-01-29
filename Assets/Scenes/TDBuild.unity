@@ -409,6 +409,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tile: {fileID: 11400000, guid: a1cca118f5c4ffe4c9d2ec992fb4926f, type: 2}
+  playerSpawn: {fileID: 0}
+  bossRoom: {fileID: 0}
   mainmap: {fileID: 710982445}
 --- !u!4 &1766982109
 Transform:
