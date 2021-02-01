@@ -408,9 +408,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43a817d0a4a4982469ac6c3403bd1c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile: {fileID: 11400000, guid: a1cca118f5c4ffe4c9d2ec992fb4926f, type: 2}
-  playerSpawn: {fileID: 0}
-  bossRoom: {fileID: 0}
+  tile: {fileID: 11400000, guid: 3bbe55cc0aff988418a196128adfa204, type: 2}
+  playerSpawn: {fileID: 11400000, guid: ae02ae942ea3a444c915a196c0c65f17, type: 2}
+  bossRoom: {fileID: 11400000, guid: 8c59b91b6c86c464488bc15a4d9ac300, type: 2}
   mainmap: {fileID: 710982445}
 --- !u!4 &1766982109
 Transform:

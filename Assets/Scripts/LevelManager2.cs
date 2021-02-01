@@ -7,7 +7,7 @@ using UnityEditor.Tilemaps;
 public class LevelManager2 : MonoBehaviour{
 
     //Tile and map asset for easy access
-    public TileBase tile;
+    public Tile tile;
     public Tile playerSpawn;
     public Tile bossRoom;
     public Tilemap mainmap;
@@ -27,9 +27,9 @@ public class LevelManager2 : MonoBehaviour{
         //Create bottom layer noise
         mapArray = RandomWalkBottom(mapArray, Random.Range(-1000.0f, 1000.0f));
         //render
-        //mapArray = DeleteRandomTiles(mapArray, Random.Range(-1000.0f, 1000.0f), Random.Range(-1000.0f, 1000.0f));
-        //GenerateEntrance (mapArray);
         RenderMap(mapArray, mainmap, tile);
+        //mapArray = DeleteRandomTiles(mapArray, Random.Range(-1000.0f, 1000.0f), Random.Range(-1000.0f, 1000.0f));
+        GenerateEntrance (mapArray);
     }
 
     // Update is called once per frame
@@ -177,15 +177,13 @@ public class LevelManager2 : MonoBehaviour{
         return map; 
     }
     
-    public static void GenerateEntrance (int[,] mapArray) {
-        for (int x=0; x < mapArray.GetUpperBound(0); x++) {
-            for(int y=0; y < mapArray.GetUpperBound(1); y++) {
-                if (mapArray[x,y] == 1) {
-                    Vector3Int pos = new Vector3Int(x,y,0);
-                    mainmap.SetTile(pos, playerSpawn);
-                    break;
-                }
+    public void GenerateEntrance (int[,] mapArray) {
+        for(int y=0; y < mapArray.GetUpperBound(1); y++) {
+            if (mapArray[0,y] == 1) {
+                mainmap.SetTile(new Vector3Int(0, y, 0), playerSpawn);
+                break;
             }
         }
     }
+    
  }
