@@ -7,10 +7,10 @@ using UnityEditor.Tilemaps;
 public class LevelManager2 : MonoBehaviour{
 
     //Tile and map asset for easy access
-    public Tile tile;
-    public Tile playerSpawn;
-    public Tile bossRoom;
-    public Tilemap mainmap;
+    [SerializeField] private Tile tile;
+    [SerializeField] private Tile playerSpawn;
+    [SerializeField] private Tile bossRoom;
+    [SerializeField] private Tilemap mainmap;
     private static int width = 20;
     private static int height = 10;
     private static int halfway = height/2;
