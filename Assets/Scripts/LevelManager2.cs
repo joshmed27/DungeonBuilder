@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEditor.Tilemaps;
 
 public class LevelManager2 : MonoBehaviour{
 
-    //Tile and map asset for easy access
+    /*
+    This script is the manager for the level which will take care of level generation and creating the default rooms for each level.
+    We will begin with Serializing the important variables of the base tile, playerspawn and boss room tiles.
+    */
     [SerializeField] private Tile tile;
     [SerializeField] private Tile playerSpawn;
     [SerializeField] private Tile bossRoom;
